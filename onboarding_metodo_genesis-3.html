@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding — Método Génesis</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8A6820;
+    --black: #0A0A0A;
+    --black-2: #111111;
+    --black-3: #181818;
+    --black-4: #222222;
+    --white: #F5F0E8;
+    --white-2: #EDE8DC;
+    --muted: #7A7060;
+    --border: #2A2520;
+    --border-hover: #4A4030;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--black-4);
+    z-index: 100;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    width: 0%;
+    transition: width 0.5s ease;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 72px 24px 48px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 1px;
+    background: var(--gold);
+    opacity: .6;
+  }
+  .header-eyebrow {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 68px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .header-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .header-divider span { width: 48px; height: 1px; background: var(--gold); opacity: .4; }
+  .header-divider i { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); display: inline-block; }
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-top: 64px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .section-num {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--gold-light);
+    flex-shrink: 0;
+  }
+  .section-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .section-info p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: .3px;
+  }
+
+  /* ── FIELD GROUPS ── */
+  .field-group {
+    margin-bottom: 28px;
+  }
+  .field-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .field-group .hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-style: italic;
+    letter-spacing: .2px;
+  }
+
+  /* inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--black-3);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color .3s, background .3s;
+    -webkit-appearance: none;
+    appearance: none;
+    resize: vertical;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--gold-dark);
+    background: var(--black-2);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+  textarea { min-height: 110px; line-height: 1.7; }
+
+  /* two column */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── SCALE ── */
+  .scale-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0 2px;
+  }
+  .scale-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .scale-btn {
+    flex: 1;
+    height: 42px;
+    background: var(--black-3);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .25s;
+  }
+  .scale-btn:hover { border-color: var(--gold-dark); color: var(--gold-light); }
+  .scale-btn.active {
+    background: var(--gold-dark);
+    border-color: var(--gold);
+    color: var(--white);
+  }
+
+  /* ── CHECKBOX PILLS ── */
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill-group input[type="checkbox"] { display: none; }
+  .pill-group label {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1px solid var(--border);
+    background: var(--black-3);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: .3px;
+    text-transform: none;
+    transition: all .25s;
+  }
+  .pill-group label:hover { border-color: var(--gold-dark); color: var(--white-2); }
+  .pill-group input[type="checkbox"]:checked + label {
+    background: var(--gold-dark);
+    border-color: var(--gold);
+    color: var(--white);
+  }
+
+  /* ── SEPARATOR ── */
+  .sep {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0 0;
+    position: relative;
+  }
+  .sep::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 1px;
+    background: var(--gold);
+    opacity: .5;
+  }
+
+  /* ── CALLOUT BOX ── */
+  .callout {
+    border-left: 2px solid var(--gold);
+    padding: 16px 20px;
+    background: var(--black-3);
+    margin-bottom: 28px;
+  }
+  .callout p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .callout strong { color: var(--gold-light); font-weight: 500; }
+
+  /* ── SUBMIT ── */
+  .submit-wrap {
+    margin-top: 56px;
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .submit-wrap::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 1px;
+    background: var(--gold);
+    opacity: .5;
+  }
+  .submit-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: .3px;
+  }
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 16px 48px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-submit:hover { opacity: .88; }
+  .btn-submit:active { transform: scale(.98); }
+
+  /* ── SUCCESS ── */
+  #success {
+    display: none;
+    text-align: center;
+    padding: 80px 24px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  #success .success-icon {
+    width: 52px; height: 52px;
+    border: 1px solid var(--gold-dark);
+    margin: 0 auto 28px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #success h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  #success h2 em { color: var(--gold-light); font-style: italic; }
+  #success p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-top: 12px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* corner ornaments on header */
+  .corner { position: absolute; width: 22px; height: 22px; }
+  .corner-tl { top: 16px; left: 16px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); opacity: .5; }
+  .corner-tr { top: 16px; right: 16px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); opacity: .5; }
+  .corner-bl { bottom: 16px; left: 16px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); opacity: .5; }
+  .corner-br { bottom: 16px; right: 16px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); opacity: .5; }
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<header>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="header-eyebrow">Bienvenido/a al proceso</div>
+  <div class="header-title">Método <em>Génesis</em></div>
+  <div class="header-divider"><span></span><i></i><span></span></div>
+  <p class="header-sub">Este formulario es el primer paso de tu transformación. Completarlo con honestidad me permite conocerte profundamente y diseñar juntos un proceso que realmente funcione para vos.</p>
+</header>
+
+<main>
+  <form id="onboardingForm" novalidate>
+
+    <!-- ══ SECCIÓN 1: DATOS PERSONALES ══ -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-info">
+          <h2>Quién sos</h2>
+          <p>Datos básicos para personalizar el proceso</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+        </div>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field-group">
+          <label for="edad">Edad</label>
+          <input type="text" id="edad" name="edad" placeholder="Ej: 32">
+        </div>
+        <div class="field-group">
+          <label for="ocupacion">Ocupación / Rol actual</label>
+          <input type="text" id="ocupacion" name="ocupacion" placeholder="Ej: Emprendedora, Gerente, etc.">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="como_llego">¿Cómo llegaste al Método Génesis?</label>
+        <input type="text" id="como_llego" name="como_llego" placeholder="Ej: Instagram, recomendación de alguien, búsqueda propia...">
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ══ SECCIÓN 2: SITUACIÓN ACTUAL ══ -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-info">
+          <h2>Tu punto de partida</h2>
+          <p>Cómo está funcionando tu mente y tu vida hoy</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p>No hay respuestas correctas ni incorrectas. Cuanto más honesto/a seas aquí, <strong>más poderosa va a ser nuestra primera sesión juntos</strong>.</p>
+      </div>
+
+      <div class="field-group">
+        <label for="situacion_actual">¿Cuál es la situación que más te pesa en este momento?</label>
+        <div class="hint">Describila como si se la contaras a alguien de confianza. Sin filtros.</div>
+        <textarea id="situacion_actual" name="situacion_actual" placeholder="Ej: Siento que nunca termino lo que empiezo, que siempre vuelvo al mismo lugar a pesar de que conscientemente sé que quiero cambiar..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="patron_repetido">¿Qué patrón o ciclo sentís que se repite en tu vida?</label>
+        <div class="hint">Puede ser en vínculos, trabajo, decisiones, autoestima, cualquier área.</div>
+        <textarea id="patron_repetido" name="patron_repetido" placeholder="Ej: Siempre llego hasta cierto punto y después me saboteo. O elijo personas que terminan decepcionándome..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>¿Qué tan satisfecho/a estás con tu vida en general hoy?</label>
+        <div class="scale-wrap">
+          <div class="scale-btns" id="satisfaccion_actual">
+            <button type="button" class="scale-btn" data-val="1">1</button>
+            <button type="button" class="scale-btn" data-val="2">2</button>
+            <button type="button" class="scale-btn" data-val="3">3</button>
+            <button type="button" class="scale-btn" data-val="4">4</button>
+            <button type="button" class="scale-btn" data-val="5">5</button>
+            <button type="button" class="scale-btn" data-val="6">6</button>
+            <button type="button" class="scale-btn" data-val="7">7</button>
+            <button type="button" class="scale-btn" data-val="8">8</button>
+            <button type="button" class="scale-btn" data-val="9">9</button>
+            <button type="button" class="scale-btn" data-val="10">10</button>
+          </div>
+          <div class="scale-labels"><span>Muy insatisfecho/a</span><span>Pleno/a</span></div>
+        </div>
+        <input type="hidden" id="satisfaccion_actual_val" name="satisfaccion_actual">
+      </div>
+
+      <div class="field-group">
+        <label>¿En qué áreas sentís que tu mente te frena más? (elegí todas las que apliquen)</label>
+        <div class="pill-group">
+          <input type="checkbox" id="a1" name="areas_bloqueo" value="Vínculos y relaciones"><label for="a1">Vínculos y relaciones</label>
+          <input type="checkbox" id="a2" name="areas_bloqueo" value="Trabajo y carrera"><label for="a2">Trabajo y carrera</label>
+          <input type="checkbox" id="a3" name="areas_bloqueo" value="Autoestima y confianza"><label for="a3">Autoestima y confianza</label>
+          <input type="checkbox" id="a4" name="areas_bloqueo" value="Dinero y abundancia"><label for="a4">Dinero y abundancia</label>
+          <input type="checkbox" id="a5" name="areas_bloqueo" value="Decisiones importantes"><label for="a5">Tomar decisiones</label>
+          <input type="checkbox" id="a6" name="areas_bloqueo" value="Propósito y dirección"><label for="a6">Propósito y dirección</label>
+          <input type="checkbox" id="a7" name="areas_bloqueo" value="Salud y hábitos"><label for="a7">Salud y hábitos</label>
+          <input type="checkbox" id="a8" name="areas_bloqueo" value="Familia"><label for="a8">Familia</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="autosabotaje">¿Cómo se manifiesta el autosabotaje en tu vida?</label>
+        <div class="hint">¿Procrastinás, te bloqueás antes de algo importante, te criticás constantemente, evitás situaciones?</div>
+        <textarea id="autosabotaje" name="autosabotaje" placeholder="Describí cómo notás que te frenás a vos mismo/a..."></textarea>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ══ SECCIÓN 3: HISTORIAL ══ -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-info">
+          <h2>Tu recorrido previo</h2>
+          <p>Lo que ya intentaste y lo que aprendiste de eso</p>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>¿Trabajaste antes en tu desarrollo personal? (elegí todo lo que aplique)</label>
+        <div class="pill-group">
+          <input type="checkbox" id="h1" name="historial" value="Psicología / Terapia"><label for="h1">Psicología / Terapia</label>
+          <input type="checkbox" id="h2" name="historial" value="Coaching"><label for="h2">Coaching</label>
+          <input type="checkbox" id="h3" name="historial" value="PNL"><label for="h3">PNL</label>
+          <input type="checkbox" id="h4" name="historial" value="Meditación / Mindfulness"><label for="h4">Meditación / Mindfulness</label>
+          <input type="checkbox" id="h5" name="historial" value="Cursos online"><label for="h5">Cursos online</label>
+          <input type="checkbox" id="h6" name="historial" value="Libros de autoayuda"><label for="h6">Libros de autoayuda</label>
+          <input type="checkbox" id="h7" name="historial" value="Ninguno"><label for="h7">Es mi primera vez</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="intentos_previos">¿Qué intentaste antes para cambiar lo que querés cambiar?</label>
+        <div class="hint">¿Qué funcionó? ¿Qué no funcionó? ¿Por qué creés que no fue suficiente?</div>
+        <textarea id="intentos_previos" name="intentos_previos" placeholder="Ej: Fui a terapia 2 años, mejoraba pero nunca terminaba de soltar ciertos patrones. Los cursos me daban herramientas pero no lograba sostenerlas..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="resistencias">¿Qué resistencias o miedos tenés sobre este proceso?</label>
+        <div class="hint">La honestidad acá vale oro. ¿Hay algo que te da miedo encontrar o cambiar?</div>
+        <textarea id="resistencias" name="resistencias" placeholder="Ej: Miedo a abrirme demasiado. A que cambie y pierda algo o a alguien. A que no funcione esta vez tampoco..."></textarea>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ══ SECCIÓN 4: META Y VISIÓN ══ -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-info">
+          <h2>Tu meta a 90 días</h2>
+          <p>A dónde querés llegar al final del proceso</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p>Esta sección es el corazón del formulario. <strong>No hace falta que sea perfecta</strong> — en nuestra llamada de seteo la vamos a refinar juntos para que sea específica, posible y medible.</p>
+      </div>
+
+      <div class="field-group">
+        <label for="vision_90">Si el proceso funciona como esperás, ¿cómo sería tu vida en 90 días?</label>
+        <div class="hint">Describila con detalle. ¿Qué estarías haciendo diferente? ¿Cómo te sentirías? ¿Qué decisiones estarías tomando?</div>
+        <textarea id="vision_90" name="vision_90" style="min-height:130px" placeholder="Ej: Me veo tomando decisiones sin paralizarme. Teniendo conversaciones que evité durante años. Sintiéndome segura de lo que quiero y actuando en consecuencia sin necesitar la aprobación de nadie..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="un_cambio">Si tuvieras que elegir UN solo cambio como el más importante, ¿cuál sería?</label>
+        <div class="hint">El cambio que, si ocurriera, sentiríás que valió absolutamente todo.</div>
+        <textarea id="un_cambio" name="un_cambio" placeholder="Ej: Dejar de necesitar la aprobación de los demás para tomar decisiones. / Salir de la relación que me hace daño. / Animarme a lanzar mi emprendimiento..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="como_medimos">¿Cómo sabrías que lograste ese cambio?</label>
+        <div class="hint">¿Qué tendrías que ver, sentir o hacer diferente para decir "lo logré"? Pensá en algo concreto y observable.</div>
+        <textarea id="como_medimos" name="como_medimos" placeholder="Ej: Tendría que haber tenido esa conversación con mi madre. / Estar trabajando en mi proyecto aunque no esté "todo listo". / Sentirme tranquila al tomar decisiones sin consultar a 5 personas antes..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>¿Qué tan comprometido/a estás con hacer este trabajo de verdad?</label>
+        <div class="scale-wrap">
+          <div class="scale-btns" id="compromiso">
+            <button type="button" class="scale-btn" data-val="1">1</button>
+            <button type="button" class="scale-btn" data-val="2">2</button>
+            <button type="button" class="scale-btn" data-val="3">3</button>
+            <button type="button" class="scale-btn" data-val="4">4</button>
+            <button type="button" class="scale-btn" data-val="5">5</button>
+            <button type="button" class="scale-btn" data-val="6">6</button>
+            <button type="button" class="scale-btn" data-val="7">7</button>
+            <button type="button" class="scale-btn" data-val="8">8</button>
+            <button type="button" class="scale-btn" data-val="9">9</button>
+            <button type="button" class="scale-btn" data-val="10">10</button>
+          </div>
+          <div class="scale-labels"><span>Todavía con dudas</span><span>100% dentro</span></div>
+        </div>
+        <input type="hidden" id="compromiso_val" name="compromiso">
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ══ SECCIÓN 5: CIERRE ══ -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-info">
+          <h2>Para la llamada de seteo</h2>
+          <p>Lo que necesito saber para que sea la mejor llamada posible</p>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="pregunta_principal">¿Cuál es la pregunta más importante que querés que respondamos juntos en la llamada?</label>
+        <textarea id="pregunta_principal" name="pregunta_principal" placeholder="Ej: ¿Cómo sé si mi meta es realista? / ¿Qué pasa si en el proceso me trabo y no avanzo? / ¿Cómo vas a trabajar específicamente con mi caso?..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="algo_mas">¿Hay algo más que quieras que sepa antes de encontrarnos?</label>
+        <div class="hint">Algo que sientas importante compartir y que no quedó en ninguna pregunta anterior.</div>
+        <textarea id="algo_mas" name="algo_mas" placeholder="Opcional — todo lo que quieras agregar..."></textarea>
+      </div>
+    </div>
+
+    <!-- ══ SUBMIT ══ -->
+    <div class="submit-wrap section" id="s-submit">
+      <p class="submit-note">Tu información es confidencial y solo la veo yo.</p>
+      <button type="submit" class="btn-submit">
+        Enviar mi onboarding
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+  </form>
+
+  <!-- SUCCESS STATE -->
+  <div id="success">
+    <div class="success-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 10l5 5 9-9" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>¡Listo, <em>gracias</em>!</h2>
+    <p>Recibí tu onboarding completo. Me voy a tomar el tiempo de leerlo con atención antes de nuestra llamada.</p>
+    <p style="margin-top:16px">En las próximas horas te contacto para confirmar el horario de nuestra sesión de seteo. <strong style="color:var(--gold-light)">Este es tu primer paso real.</strong></p>
+  </div>
+</main>
+
+<footer>Método Génesis &nbsp;·&nbsp; Información confidencial</footer>
+
+<script>
+  // ── INTERSECTION OBSERVER para reveal ──
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  sections.forEach(s => observer.observe(s));
+
+  // ── PROGRESS BAR ──
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress);
+
+  // ── SCALE BUTTONS ──
+  document.querySelectorAll('.scale-btns').forEach(group => {
+    const hiddenId = group.id + '_val';
+    const hidden = document.getElementById(hiddenId);
+    group.querySelectorAll('.scale-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (hidden) hidden.value = btn.dataset.val;
+      });
+    });
+  });
+
+  // ── FORM SUBMIT ──
+  document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = this.querySelector('.btn-submit');
+    btn.textContent = 'Enviando...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+
+    const data = {};
+    new FormData(this).forEach((v, k) => {
+      if (data[k]) {
+        data[k] = Array.isArray(data[k]) ? [...data[k], v] : [data[k], v];
+      } else {
+        data[k] = v;
+      }
+    });
+
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ access_key: '682a0e09-05fb-4828-9970-60f2e3ca573c', subject: 'Nuevo onboarding — Método Génesis', ...data })
+      });
+    } catch(err) {
+      console.log('Submit error:', err);
+    }
+
+    // Show success
+    document.getElementById('onboardingForm').style.display = 'none';
+    const successEl = document.getElementById('success');
+    successEl.style.display = 'block';
+    successEl.style.opacity = '0';
+    successEl.style.transform = 'translateY(20px)';
+    successEl.style.transition = 'opacity .6s ease, transform .6s ease';
+    setTimeout(() => {
+      successEl.style.opacity = '1';
+      successEl.style.transform = 'translateY(0)';
+    }, 50);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
